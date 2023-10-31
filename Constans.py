@@ -1,0 +1,2 @@
+DATABASE = "datebases\\"
+IMAGES = 'images\\'
