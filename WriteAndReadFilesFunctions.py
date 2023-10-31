@@ -18,10 +18,36 @@ def write_exception(message):
             f.write(message)
 
 
-def add_to_db_new_planet(planet: Planet):
+def planet_classes():
+    """возращает список всех планет"""
     con = sqlite3.connect(DATABASE + 'planets.db')
     cur = con.cursor()
-    cur.execute(
-        f"insert into planets.db (name, g, atnosphere, secondSpaceSpeed, color, parent, alt VALUES ({planet.name}, {planet.g}, {planet.atmosphere}, {planet.secondspacespeed}, {planet.color}, {planet.parent}, {planet.alt})")
+    data = cur.execute("""select * from planets""").fetchall()
+    result = []
+
+    for el in data:
+        result.append(Planet(*el))
+    con.close()
+    return result
+
+
+def __convert(obj):
+    if isinstance(obj, str):
+        return f"'{obj}'"
+    return obj
+
+
+def add_obj_in_database(path, data, data_name):
+    con = sqlite3.connect(path)
+    cur = con.cursor()
+    database = path.split('\\')[-1].split('.')[0]
+    req = f"insert into {database}\n"
+    req += f"({', '.join(data_name)})\n"
+    data = map(__convert, data)
+    req += f"values ({', '.join(data)})"
+    print(req)
+    cur.execute(req)
     con.commit()
     con.close()
+
+

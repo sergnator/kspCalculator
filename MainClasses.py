@@ -1,13 +1,10 @@
-
-#объекты
+# объекты
 class Planet:
-    """класс планет"""
-
-    def __init__(self, id, name, g, atmosphere, secondspacespeed, color, parent, alt):
+    def __init__(self, id, name, g, atmosphere, second_space_speed, color, parent, alt):
         self.g = g
         self.atmosphere = atmosphere
         self.name = name
-        self.secondspacespeed = secondspacespeed
+        self.second_space_speed = second_space_speed
         self.color = color
         self.parent = parent
         self.alt = alt
@@ -16,14 +13,12 @@ class Planet:
     def returnname(self):
         return self.name
 
+
 class ObjectOfRocket:
-    """класс отвечает за все объекты"""
     pass
 
 
 class RocketEngine(ObjectOfRocket):
-    """класс отвечает за все объекты типа двигатели"""
-
     def __init__(self, id, name, traction, pulse, mass):
         self.name = name
         self.traction = traction
@@ -32,11 +27,10 @@ class RocketEngine(ObjectOfRocket):
 
 
 class Tank(ObjectOfRocket):
-    """Топлевные баки"""
-
     def __init__(self, id, name, mass):
         self.name = name
         self.mass = mass
+
 
 # исключения
 class ExceptionGroupKSP(Exception):

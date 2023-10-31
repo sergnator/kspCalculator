@@ -10,6 +10,9 @@
     <height>742</height>
    </rect>
   </property>
+  <property name="tabletTracking">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>Калькулятор Полётов Ksp</string>
   </property>
@@ -111,14 +114,21 @@
                  <pointsize>16</pointsize>
                 </font>
                </property>
+               <property name="editable">
+                <bool>false</bool>
+               </property>
+               <property name="currentText">
+                <string notr="true"/>
+               </property>
+               <property name="insertPolicy">
+                <enum>QComboBox::NoInsert</enum>
+               </property>
+               <property name="placeholderText">
+                <string>выберите</string>
+               </property>
                <property name="frame">
                 <bool>false</bool>
                </property>
-               <item>
-                <property name="text">
-                 <string>выберите</string>
-                </property>
-               </item>
               </widget>
              </item>
              <item>
@@ -128,14 +138,18 @@
                  <pointsize>16</pointsize>
                 </font>
                </property>
+               <property name="editable">
+                <bool>false</bool>
+               </property>
+               <property name="insertPolicy">
+                <enum>QComboBox::NoInsert</enum>
+               </property>
+               <property name="placeholderText">
+                <string>выберете</string>
+               </property>
                <property name="frame">
                 <bool>false</bool>
                </property>
-               <item>
-                <property name="text">
-                 <string>выберите</string>
-                </property>
-               </item>
               </widget>
              </item>
             </layout>
@@ -145,32 +159,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QLabel" name="label_4">
-           <property name="font">
-            <font>
-             <pointsize>16</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Δv</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="DeltaV">
-           <property name="font">
-            <font>
-             <pointsize>16</pointsize>
-            </font>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <layout class="QHBoxLayout" name="horizontalLayout_2"/>
        </item>
       </layout>
      </item>
@@ -212,6 +201,50 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>640</y>
+      <width>61</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../Downloads/free-icon-plus-sign-button-16057.png</normaloff>../../Downloads/free-icon-plus-sign-button-16057.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>40</width>
+      <height>40</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>630</y>
+      <width>221</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Добавить Обьект</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

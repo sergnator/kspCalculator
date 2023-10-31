@@ -1,28 +1,15 @@
-import numpy
-
-from MainClasses import Planet, RocketEngine
 import sqlite3
 import math
 from PIL import Image, ImageDraw
+from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
 
 from Constans import DATABASE
-from PyQt5 import QtGui
-
-def planet_classes():
-    """возращает список всех планет"""
-    con = sqlite3.connect(DATABASE + 'planets.db')
-    cur = con.cursor()
-    data = cur.execute("""select * from planets""").fetchall()
-    result = []
-
-    for el in data:
-        result.append(Planet(*el))
-    con.close()
-    return result
+from MainClasses import Planet, RocketEngine
+from WriteAndReadFilesFunctions import planet_classes
 
 
 def get_part_info(name):
-    """возращает информацию части ракеты"""
     con = sqlite3.connect(DATABASE + 'objects.db')
     cur = con.cursor()
     data = cur.execute("""select * from objects where name = ?""", (name,)).fetchall()
@@ -32,7 +19,6 @@ def get_part_info(name):
 
 
 def delta_v(first, second):
-    """возращает нужно количество deltaV"""
     if second == first:
         return 0
     if second == 'Kerbin':
@@ -45,7 +31,6 @@ def delta_v(first, second):
 
 
 def create_angle(first, second):
-    """возращает нужный угол для стартового окна"""
     planets = planet_classes()
     parent = 0
     for el in planets:
@@ -57,19 +42,16 @@ def create_angle(first, second):
         if el.id == first.parent:
             parent = el
 
-    t_h = math.pi * math.sqrt(math.pow(first.alt + second.alt, 3) / (8 * parent.secondspacespeed))
-    angle = (180 - math.sqrt(parent.secondspacespeed / second.alt) * (t_h / second.alt) * (180 / math.pi)) % 360
+    t_h = math.pi * math.sqrt(math.pow(first.alt + second.alt, 3) / (8 * parent.second_space_speed))
+    angle = (180 - math.sqrt(parent.second_space_speed / second.alt) * (t_h / second.alt) * (180 / math.pi)) % 360
     return str(angle)
 
 
 def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255)):
-    """рисует картинку стартого окна"""
-
     angle = float(create_angle(first, second))
     im = Image.new("RGB", (width, height), color)
     draw = ImageDraw.Draw(im)
     flag = 0
-
 
     # определение какакя планета выше, какая ниже
     planets = planet_classes()
