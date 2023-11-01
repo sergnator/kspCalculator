@@ -51,8 +51,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>324</width>
-      <height>275</height>
+      <width>311</width>
+      <height>201</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -202,12 +202,12 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="addBut">
     <property name="geometry">
      <rect>
       <x>850</x>
       <y>640</y>
-      <width>61</width>
+      <width>51</width>
       <height>51</height>
      </rect>
     </property>
@@ -216,7 +216,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../Downloads/free-icon-plus-sign-button-16057.png</normaloff>../../Downloads/free-icon-plus-sign-button-16057.png</iconset>
+      <normaloff>Images/free-icon-plus-sign-button-16057.png</normaloff>Images/free-icon-plus-sign-button-16057.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -243,7 +243,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Добавить Обьект</string>
+     <string>Добавить планету</string>
     </property>
    </widget>
   </widget>
@@ -253,7 +253,7 @@
      <x>0</x>
      <y>0</y>
      <width>990</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

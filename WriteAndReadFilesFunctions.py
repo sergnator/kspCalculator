@@ -32,9 +32,12 @@ def planet_classes():
 
 
 def __convert(obj):
-    if isinstance(obj, str):
-        return f"'{obj}'"
-    return obj
+    if isinstance(obj, bool):
+        if obj:
+            return 1
+        return 0
+
+    return f"'{obj}'"
 
 
 def add_obj_in_database(path, data, data_name):

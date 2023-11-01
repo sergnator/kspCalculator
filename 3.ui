@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>PlanetAdd</class>
+ <widget class="QWidget" name="PlanetAdd">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Добавить планету</string>
   </property>
   <widget class="QLabel" name="Icon">
    <property name="geometry">
@@ -26,10 +26,10 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap>Images/KspIcon.png</pixmap>
+    <pixmap>../../../.designer/backup/Images/KspIcon.png</pixmap>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>210</x>
@@ -159,7 +159,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="color">
+         <widget class="QPushButton" name="color_button">
           <property name="font">
            <font>
             <pointsize>16</pointsize>
@@ -186,7 +186,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QPushButton" name="save">
+       <widget class="QPushButton" name="saveBut">
         <property name="font">
          <font>
           <pointsize>20</pointsize>

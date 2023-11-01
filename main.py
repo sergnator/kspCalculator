@@ -1,5 +1,5 @@
 # pip install -r requirements.txt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QColorDialog
 from PyQt5.QtGui import QPixmap, QPalette
 from PyQt5.QtCore import Qt
 
@@ -18,6 +18,9 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.root()
+
+    def root(self):
         self.pixmap_icon = QPixmap(Constans.IMAGES + 'KspIcon.png')
         self.Icon.setPixmap(self.pixmap_icon)
         self.fill_combobox()
@@ -26,6 +29,7 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         self.start.currentTextChanged.connect(self.change_start)
         self.End.currentTextChanged.connect(self.change_end)
         self.Calculate.clicked.connect(self.calculate)
+        self.addBut.clicked.connect(self.add_planet)
 
     def fill_combobox(self):
         planets = kspPlanetsTransphere.planet_classes()
@@ -58,12 +62,23 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         result = dialog.exec_()
         return result
 
+    def add_planet(self):
+        dialog = DialogAddPlanet(self)
+        dialog.show()
+        res = dialog.exec_()
+        if res != Constans.BAD_RESULT:
+            res = dialog.param
+            WriteAndReadFilesFunctions.add_obj_in_database(Constans.DATABASE + 'planets.db', res, (
+                'name', 'g', 'atmosphere', 'secondSpaceSpeed', 'color', 'alt'))
+
 
 # окно ошибки
 class MyDialog(QDialog, Ui_MainWindow_Error):
-    def __init__(self, window=None):
+    def __init__(self, window=None, text=None):
         super().__init__(window)
         self.setupUi(self)
+        if text is not None:
+            self.label.setText(text)
         self.Yes.clicked.connect(self.accept)
         self.No.clicked.connect(self.reject)
 
@@ -71,12 +86,26 @@ class MyDialog(QDialog, Ui_MainWindow_Error):
 class DialogAddPlanet(QDialog, Ui_Form):
     def __init__(self, window=None):
         super().__init__(window)
-        self.save.clicked.connect(self.save_func)
+        self.setupUi(self)
+        self.saveBut.clicked.connect(self.save_func)
+        self.cancel.clicked.connect(self.reject)
+        self.color = ''
+        self.color_button.clicked.connect(self.choice_color)
+        self.Icon.setPixmap(QPixmap(Constans.IMAGES + 'KspIcon.png'))
 
     def save_func(self):
-        if any(map(lambda x: x no))
-        return [self.accept()] + [self.name, self.acceleration, self.atmoph, self.second_space_speed, self.color,
-                                  self.alt]
+        param = (self.name.text(), self.acceleration.text(), self.atmoph.isChecked(), self.second_space_speed.text(),
+                 self.color, self.alt.text())
+        if all(map(lambda x: x != '', param)):
+            self.param = param
+            self.accept()
+
+
+    def choice_color(self):
+        color = QColorDialog.getColor()
+        if color.isValid():
+            self.color_button.setStyleSheet(f'background-color: {color.value()}')
+            self.color = color.rgb()
 
 
 def except_hook(exc_type, exc_value, exc_tb):
@@ -91,6 +120,11 @@ sys.excepthook = except_hook
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setStyleSheet("""QComboBox {
+    border: 1px solid gray;
+    border-radius: 3px;
+    min-width: 6em;
+}""")
     ex = CalculatorKsp()
     ex.show()
     sys.exit(app.exec_())
