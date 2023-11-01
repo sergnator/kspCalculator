@@ -19,7 +19,6 @@ def write_exception(message):
 
 
 def planet_classes():
-    """возращает список всех планет"""
     con = sqlite3.connect(DATABASE + 'planets.db')
     cur = con.cursor()
     data = cur.execute("""select * from planets""").fetchall()
@@ -34,8 +33,8 @@ def planet_classes():
 def __convert(obj):
     if isinstance(obj, bool):
         if obj:
-            return 1
-        return 0
+            return str(1)
+        return str(0)
 
     return f"'{obj}'"
 
@@ -48,7 +47,6 @@ def add_obj_in_database(path, data, data_name):
     req += f"({', '.join(data_name)})\n"
     data = map(__convert, data)
     req += f"values ({', '.join(data)})"
-    print(req)
     cur.execute(req)
     con.commit()
     con.close()

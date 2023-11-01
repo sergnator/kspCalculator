@@ -35,7 +35,7 @@
      <x>210</x>
      <y>190</y>
      <width>520</width>
-     <height>313</height>
+     <height>406</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -141,11 +141,11 @@
          <widget class="QRadioButton" name="atmoph">
           <property name="font">
            <font>
-            <pointsize>100</pointsize>
+            <pointsize>16</pointsize>
            </font>
           </property>
           <property name="text">
-           <string/>
+           <string>есть</string>
           </property>
          </widget>
         </item>

@@ -1,7 +1,8 @@
 # pip install -r requirements.txt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QColorDialog
-from PyQt5.QtGui import QPixmap, QPalette
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
+import qdarktheme
 
 import sys
 import traceback
@@ -12,6 +13,7 @@ from interface3 import Ui_Form
 import kspPlanetsTransphere
 import Constans
 import WriteAndReadFilesFunctions
+from MainClasses import *
 
 
 class CalculatorKsp(QMainWindow, Ui_MainWindow):
@@ -19,6 +21,7 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.root()
+        qdarktheme.setup_theme('light')
 
     def root(self):
         self.pixmap_icon = QPixmap(Constans.IMAGES + 'KspIcon.png')
@@ -30,6 +33,9 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         self.End.currentTextChanged.connect(self.change_end)
         self.Calculate.clicked.connect(self.calculate)
         self.addBut.clicked.connect(self.add_planet)
+        self.dark = False
+        self.darkTheme.clicked.connect(self.theme_change)
+        self.darkTheme.setIcon(QIcon(QPixmap(Constans.IMAGES + 'icon-light.png')))
 
     def fill_combobox(self):
         planets = kspPlanetsTransphere.planet_classes()
@@ -38,13 +44,18 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         self.End.addItems(planets)
 
     def calculate(self):
-        palette = QPalette()
-        color = palette.color(QPalette.Window)
+        valid(self.start_text)
+        valid(self.end_text)
+        color = (248, 249, 250)
+        color_text = (0, 0, 0)
+        if self.dark:
+            color = (32, 33, 36)
+            color_text = (255, 255, 255)
         self.Angel.setText(
             str(round(float(kspPlanetsTransphere.create_angle(self.start_text, self.end_text)), 1)) + '°')
         self.Image.setPixmap(
             QPixmap(kspPlanetsTransphere.draw_angle(self.start_text, self.end_text, width=self.Image.width(),
-                                                    height=self.Image.height(), color=color.rgb())))
+                                                    height=self.Image.height(), color=color, color_text=color_text)))
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Enter - 1:
@@ -56,8 +67,11 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
     def change_end(self, text):
         self.end_text = text
 
-    def error_message(self):
-        dialog = MyDialog(self)
+    def error_message(self, text=None):
+        if text is not None:
+            dialog = MyDialog(self, text)
+        else:
+            dialog = MyDialog(self)
         dialog.show()
         result = dialog.exec_()
         return result
@@ -71,6 +85,16 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
             WriteAndReadFilesFunctions.add_obj_in_database(Constans.DATABASE + 'planets.db', res, (
                 'name', 'g', 'atmosphere', 'secondSpaceSpeed', 'color', 'alt'))
 
+    def theme_change(self):
+        if self.dark:
+            qdarktheme.setup_theme('light')
+            self.darkTheme.setIcon(QIcon(QPixmap(Constans.IMAGES + 'icon-light.png')))
+        else:
+            qdarktheme.setup_theme('dark')
+            self.darkTheme.setIcon(QIcon(QPixmap(Constans.IMAGES + 'icon-dark.png')))
+        self.dark = not self.dark
+        self.calculate()
+
 
 # окно ошибки
 class MyDialog(QDialog, Ui_MainWindow_Error):
@@ -81,6 +105,7 @@ class MyDialog(QDialog, Ui_MainWindow_Error):
             self.label.setText(text)
         self.Yes.clicked.connect(self.accept)
         self.No.clicked.connect(self.reject)
+        self.setModal(True)
 
 
 class DialogAddPlanet(QDialog, Ui_Form):
@@ -96,10 +121,10 @@ class DialogAddPlanet(QDialog, Ui_Form):
     def save_func(self):
         param = (self.name.text(), self.acceleration.text(), self.atmoph.isChecked(), self.second_space_speed.text(),
                  self.color, self.alt.text())
-        if all(map(lambda x: x != '', param)):
-            self.param = param
-            self.accept()
-
+        for i in param:
+            valid(i)
+        self.param = param
+        self.accept()
 
     def choice_color(self):
         color = QColorDialog.getColor()
@@ -109,16 +134,30 @@ class DialogAddPlanet(QDialog, Ui_Form):
 
 
 def except_hook(exc_type, exc_value, exc_tb):
-    tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
-    WriteAndReadFilesFunctions.write_exception(tb)
-    res = ex.error_message()
-    if res == Constans.OK_RESULT:
-        sys.exit()
+    if not issubclass(exc_type, ExceptionGroupKSP):
+        tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
+        WriteAndReadFilesFunctions.write_exception(tb)
+        res = ex.error_message()
+        if res == Constans.OK_RESULT:
+            sys.exit()
+    else:
+        ex.error_message(exc_value.message)
 
 
 sys.excepthook = except_hook
 
+
+def valid(str_: str):
+    if str_ is None or str_ == '':
+        raise NoAnyoneSelect('нужно заполнить все поля')
+    if isinstance(str_, str):
+        if str_.isdigit():
+            if int(str_) < 0:
+                raise NegativeValue("число в поле не может быть отрицательным")
+
+
 if __name__ == '__main__':
+    qdarktheme.enable_hi_dpi()
     app = QApplication(sys.argv)
     app.setStyleSheet("""QComboBox {
     border: 1px solid gray;
@@ -127,4 +166,5 @@ if __name__ == '__main__':
 }""")
     ex = CalculatorKsp()
     ex.show()
+
     sys.exit(app.exec_())

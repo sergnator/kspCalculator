@@ -47,7 +47,7 @@ def create_angle(first, second):
     return str(angle)
 
 
-def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255)):
+def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255), color_text=(0, 0, 0)):
     angle = float(create_angle(first, second))
     im = Image.new("RGB", (width, height), color)
     draw = ImageDraw.Draw(im)
@@ -65,11 +65,11 @@ def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255)):
     # рисует second
 
     draw.ellipse(((int(0.2 * width), int(0.2 * height)), (int(0.8 * width), int(0.8 * height))),
-                 fill=(255, 255, 255), outline=(0, 0, 0))
+                 fill=color, outline=(0, 0, 0))
     if flag:
         draw.ellipse(((int(0.77 * width), int(0.47 * height)), (int(0.83 * width), int(0.53 * height))),
                      fill=first.color)
-        draw.text((int(0.77 * width), int(0.53 * height)), first.name, 'black', font_size=20)
+        draw.text((int(0.77 * width), int(0.53 * height)), first.name, fill=color_text, font_size=20)
     else:
         R = (int(0.2 * height) - int(0.8 * height)) / 2
         x0 = int(0.5 * width)
@@ -78,12 +78,12 @@ def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255)):
         y = int(y0 + R * math.sin(math.radians(angle)))
 
         draw.ellipse([x - 30, y - 30, x + 30, y + 30], fill=second.color)
-        draw.text((x - 30, y + 30), second.name, 'black', font_size=20)
+        draw.text((x - 30, y + 30), second.name, fill=color_text, font_size=20)
 
     # рисует first
 
     draw.ellipse(((int(0.3 * width), int(0.3 * height)), (int(0.7 * width), int(0.7 * height))),
-                 fill=(255, 255, 255), outline=(0, 0, 0))
+                 fill=color, outline=(0, 0, 0))
     if flag:
         R = (int(0.3 * height) - int(0.7 * height)) / 2
         x0 = int(0.5 * width)
@@ -91,16 +91,16 @@ def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255)):
         x = int(x0 + R * -math.cos(math.radians(angle)))
         y = int(y0 + R * math.sin(math.radians(angle)))
         draw.ellipse([x - 30, y - 30, x + 30, y + 30], fill=second.color)
-        draw.text((x - 30, y + 30), second.name, 'black', font_size=20)
+        draw.text((x - 30, y + 30), second.name, fill=color_text, font_size=20)
     else:
         draw.ellipse(((int(0.67 * width), int(0.47 * height)), (int(0.73 * width), int(0.53 * height))),
                      fill=first.color)
-        draw.text((int(0.67 * width), int(0.53 * height)), first.name, 'black', font_size=20)
+        draw.text((int(0.67 * width), int(0.53 * height)), first.name, fill=color_text, font_size=20)
 
     # рисует кербол
     draw.ellipse(((int(0.45 * width), int(0.45 * height)), (int(0.55 * width), int(0.55 * height))), (238, 210, 2))
 
-    draw.text((int(0.475 * width), int(0.55 * height)), 'kerbol', (0, 0, 0), font_size=20)
+    draw.text((int(0.475 * width), int(0.55 * height)), 'kerbol', fill=color_text, font_size=20)
 
     # линии
     if not flag:

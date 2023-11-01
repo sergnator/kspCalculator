@@ -12,16 +12,16 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(977, 736)
-        self.Icon = QtWidgets.QLabel(Form)
+    def setupUi(self, PlanetAdd):
+        PlanetAdd.setObjectName("PlanetAdd")
+        PlanetAdd.resize(977, 736)
+        self.Icon = QtWidgets.QLabel(PlanetAdd)
         self.Icon.setGeometry(QtCore.QRect(20, 560, 361, 151))
         self.Icon.setText("")
         self.Icon.setPixmap(QtGui.QPixmap("../../../.designer/backup/Images/KspIcon.png"))
         self.Icon.setObjectName("Icon")
-        self.layoutWidget = QtWidgets.QWidget(Form)
-        self.layoutWidget.setGeometry(QtCore.QRect(210, 190, 520, 313))
+        self.layoutWidget = QtWidgets.QWidget(PlanetAdd)
+        self.layoutWidget.setGeometry(QtCore.QRect(210, 190, 520, 406))
         self.layoutWidget.setObjectName("layoutWidget")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
@@ -83,9 +83,8 @@ class Ui_Form(object):
         self.verticalLayout_2.addWidget(self.acceleration)
         self.atmoph = QtWidgets.QRadioButton(self.layoutWidget)
         font = QtGui.QFont()
-        font.setPointSize(100)
+        font.setPointSize(16)
         self.atmoph.setFont(font)
-        self.atmoph.setText("")
         self.atmoph.setObjectName("atmoph")
         self.verticalLayout_2.addWidget(self.atmoph)
         self.second_space_speed = QtWidgets.QLineEdit(self.layoutWidget)
@@ -124,18 +123,19 @@ class Ui_Form(object):
         self.horizontalLayout_2.addWidget(self.cancel)
         self.verticalLayout_3.addLayout(self.horizontalLayout_2)
 
-        self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.retranslateUi(PlanetAdd)
+        QtCore.QMetaObject.connectSlotsByName(PlanetAdd)
 
-    def retranslateUi(self, Form):
+    def retranslateUi(self, PlanetAdd):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.label.setText(_translate("Form", "Имя"))
-        self.label_2.setText(_translate("Form", "Ускорение"))
-        self.label_3.setText(_translate("Form", "Атмосфера"))
-        self.label_4.setText(_translate("Form", "Вторая космическая"))
-        self.label_5.setText(_translate("Form", "Цвет"))
-        self.label_6.setText(_translate("Form", "Высота"))
-        self.color_button.setText(_translate("Form", "Выбрать"))
-        self.saveBut.setText(_translate("Form", "Потвердить"))
-        self.cancel.setText(_translate("Form", "Отмена"))
+        PlanetAdd.setWindowTitle(_translate("PlanetAdd", "Добавить планету"))
+        self.label.setText(_translate("PlanetAdd", "Имя"))
+        self.label_2.setText(_translate("PlanetAdd", "Ускорение"))
+        self.label_3.setText(_translate("PlanetAdd", "Атмосфера"))
+        self.label_4.setText(_translate("PlanetAdd", "Вторая космическая"))
+        self.label_5.setText(_translate("PlanetAdd", "Цвет"))
+        self.label_6.setText(_translate("PlanetAdd", "Высота"))
+        self.atmoph.setText(_translate("PlanetAdd", "есть"))
+        self.color_button.setText(_translate("PlanetAdd", "Выбрать"))
+        self.saveBut.setText(_translate("PlanetAdd", "Потвердить"))
+        self.cancel.setText(_translate("PlanetAdd", "Отмена"))

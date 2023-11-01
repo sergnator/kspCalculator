@@ -41,13 +41,13 @@ class ExceptionGroupKSP(Exception):
         return f'{self.message}'
 
 
-class ErrorParts(ExceptionGroupKSP):
-    pass
-
-
 class ErrorPlanets(ExceptionGroupKSP):
     pass
 
 
 class NegativeValue(ErrorPlanets):
+    pass
+
+
+class NoAnyoneSelect(ExceptionGroupKSP):
     pass
