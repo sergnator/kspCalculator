@@ -1,7 +1,7 @@
 # pip install -r requirements.txt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QColorDialog
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QColorDialog, QLabel
+from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor
+from PyQt5.QtCore import Qt, QPoint
 import qdarktheme
 
 import sys
@@ -11,7 +11,7 @@ from interface import Ui_MainWindow
 from interface2 import Ui_MainWindow_Error
 from interface3 import Ui_Form
 import kspPlanetsTransphere
-import Constans
+from Constans import *
 import WriteAndReadFilesFunctions
 from MainClasses import *
 
@@ -24,7 +24,7 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         qdarktheme.setup_theme('light')
 
     def root(self):
-        self.pixmap_icon = QPixmap(Constans.IMAGES + 'KspIcon.png')
+        self.pixmap_icon = QPixmap(IMAGES + 'KspIcon.png')
         self.Icon.setPixmap(self.pixmap_icon)
         self.fill_combobox()
         self.start_text = ''
@@ -35,11 +35,17 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         self.addBut.clicked.connect(self.add_planet)
         self.dark = False
         self.darkTheme.clicked.connect(self.theme_change)
-        self.darkTheme.setIcon(QIcon(QPixmap(Constans.IMAGES + 'icon-light.png')))
+        self.darkTheme.setIcon(QIcon(QPixmap(IMAGES + 'icon-light.png')))
+        self.map_but.clicked.connect(self.map)
+
+    def map(self):
+        dialog = DialogMapPlanets(self)
+        dialog.setModal(True)
+        dialog.show()
 
     def fill_combobox(self):
         planets = kspPlanetsTransphere.planet_classes()
-        planets = list(map(lambda x: x.returnname(), planets))[1:]
+        planets = list(map(str, planets))[1:]
         self.start.addItems(planets)
         self.End.addItems(planets)
 
@@ -80,20 +86,23 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         dialog = DialogAddPlanet(self)
         dialog.show()
         res = dialog.exec_()
-        if res != Constans.BAD_RESULT:
+        if res != BAD_RESULT:
             res = dialog.param
-            WriteAndReadFilesFunctions.add_obj_in_database(Constans.DATABASE + 'planets.db', res, (
+            WriteAndReadFilesFunctions.add_obj_in_database(DATABASE + 'planets.db', res, (
                 'name', 'g', 'atmosphere', 'secondSpaceSpeed', 'color', 'alt'))
 
     def theme_change(self):
         if self.dark:
             qdarktheme.setup_theme('light')
-            self.darkTheme.setIcon(QIcon(QPixmap(Constans.IMAGES + 'icon-light.png')))
+            self.darkTheme.setIcon(QIcon(QPixmap(IMAGES + 'icon-light.png')))
         else:
             qdarktheme.setup_theme('dark')
-            self.darkTheme.setIcon(QIcon(QPixmap(Constans.IMAGES + 'icon-dark.png')))
+            self.darkTheme.setIcon(QIcon(QPixmap(IMAGES + 'icon-dark.png')))
         self.dark = not self.dark
-        self.calculate()
+        try:
+            self.calculate()
+        except Exception:
+            pass
 
 
 # окно ошибки
@@ -116,7 +125,7 @@ class DialogAddPlanet(QDialog, Ui_Form):
         self.cancel.clicked.connect(self.reject)
         self.color = ''
         self.color_button.clicked.connect(self.choice_color)
-        self.Icon.setPixmap(QPixmap(Constans.IMAGES + 'KspIcon.png'))
+        self.Icon.setPixmap(QPixmap(IMAGES + 'KspIcon.png'))
 
     def save_func(self):
         param = (self.name.text(), self.acceleration.text(), self.atmoph.isChecked(), self.second_space_speed.text(),
@@ -133,13 +142,36 @@ class DialogAddPlanet(QDialog, Ui_Form):
             self.color = color.rgb()
 
 
+class DialogMapPlanets(QDialog):
+    def __init__(self, window=None):
+        super().__init__(window)
+        self.window_main = window
+        self.setGeometry(150, 100, 1000, 1000)
+        self.x = 1000
+        self.y = 1000
+        self.label = QLabel(self)
+        self.resize(1000, 1000)
+        self.move(0, 0)
+        self.draw()
+
+    def draw(self):
+        color = (248, 249, 250)
+        color_text = (0, 0, 0)
+        if self.window_main.dark:
+            color = (32, 33, 36)
+            color_text = (255, 255, 255)
+
+        self.label.setPixmap(kspPlanetsTransphere.draw_map(color=color, color_text=color_text))
+
+
 def except_hook(exc_type, exc_value, exc_tb):
     if not issubclass(exc_type, ExceptionGroupKSP):
         tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
         WriteAndReadFilesFunctions.write_exception(tb)
         res = ex.error_message()
-        if res == Constans.OK_RESULT:
+        if res == OK_RESULT:
             sys.exit()
+
     else:
         ex.error_message(exc_value.message)
 
@@ -166,5 +198,4 @@ if __name__ == '__main__':
 }""")
     ex = CalculatorKsp()
     ex.show()
-
     sys.exit(app.exec_())

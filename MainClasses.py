@@ -10,7 +10,10 @@ class Planet:
         self.alt = alt
         self.id = id
 
-    def returnname(self):
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
         return self.name
 
 
@@ -49,5 +52,13 @@ class NegativeValue(ErrorPlanets):
     pass
 
 
-class NoAnyoneSelect(ExceptionGroupKSP):
+class IncorrectInput(ExceptionGroupKSP):
+    pass
+
+
+class NoAnyoneSelect(IncorrectInput):
+    pass
+
+
+class DifferentParent(IncorrectInput):
     pass
