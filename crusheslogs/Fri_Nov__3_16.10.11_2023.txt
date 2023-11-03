@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "C:\Users\Александр\OneDrive\Рабочий стол\kspCalculator-main\main.py", line 171, in paintEvent
+    self.draw(qp)
+  File "C:\Users\Александр\OneDrive\Рабочий стол\kspCalculator-main\main.py", line 189, in draw
+    qp.setBrush(QColor(color))
+                ^^^^^^^^^^^^^
+TypeError: arguments did not match any overloaded call:
+  QColor(color: Qt.GlobalColor): argument 1 has unexpected type 'tuple'
+  QColor(rgb: int): too many arguments
+  QColor(rgba64: QRgba64): argument 1 has unexpected type 'tuple'
+  QColor(variant: Any): argument 1 has unexpected type 'tuple'
+  QColor(): argument 1 has unexpected type 'tuple'

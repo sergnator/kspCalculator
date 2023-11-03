@@ -1,12 +1,12 @@
 import sqlite3
 import math
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 from PyQt5 import QtGui
 
 from Constans import *
 from MainClasses import *
 from WriteAndReadFilesFunctions import planet_classes
-from random import randint
+
 
 
 def get_part_info(name):
@@ -33,6 +33,8 @@ def delta_v(first, second):
 def create_angle(first, second):
     planets = planet_classes()
     parent = 0
+    if first == second:
+        raise SamePlanet('укажите разные планеты')
     for el in planets:
         if el.name == first:
             first = el
@@ -48,6 +50,8 @@ def create_angle(first, second):
 
 
 def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255), color_text=(0, 0, 0)):
+    if first == second:
+        raise SamePlanet('Укажите разные планеты')
     angle = float(create_angle(first, second))
     im = Image.new("RGB", (width, height), color)
     draw = ImageDraw.Draw(im)
@@ -63,7 +67,7 @@ def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255), co
             second = el
     flag = second.alt < first.alt
     if first.parent != second.parent:
-        raise DifferentParent
+        raise DifferentParent('укажите планеты с одинаковым "родителем"')
 
     # рисует second
 
@@ -117,59 +121,6 @@ def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255), co
     return QtGui.QPixmap.fromImage(qim)
 
 
-def draw_map(width=1000, height=1000, color=(255, 255, 255), color_text=(0, 0, 0)):
-    # создание системы
-    font = ImageFont.truetype(TTF + '21028.ttf', size=16)
-    planets = planet_classes()[1:]
-    planets1 = []
-    for planet in planets:
-        if planet.parent == 0:
-            planets1.append(planet)
-    planets = planets1[:]
-    planets = sorted(planets, key=lambda x: x.alt)
-    i = 0.3 / len(planets)
-    b = 0.9
-    im = Image.new("RGB", (width, height), color)
-    draw = ImageDraw.Draw(im)
-    # x-левый : (0.1, 0.4), y :(0.1, 0.4)
-    # x-правый: (0.6, 0.9)
-    # draw.ellipse([(1 - b) * width, (1 - b) * height, b * width, b * height], fill=(255, 255, 255), outline=(0, 0, 0))
-    randomlist = []
-    # b -= i
-    # draw.ellipse([(1 - b) * width, (1 - b) * height, b * width, b * height], fill=(255, 255, 255), outline=(0, 0, 0))
-    for j in range(len(planets), 0, -1):
-        # орбита
-        draw.ellipse([(1 - b) * width, (1 - b) * height, b * width, b * height], fill=color,
-                     outline=color_text)
-        # планета
-        angle = randint(0, 360)
-        while True:
-            if angle in randomlist:
-                angle = randint(0, 360)
-            else:
-                break
-        randomlist.append(angle)
-        for one in range(angle - 5, angle):
-            randomlist.append(one)
-        for two in range(angle, angle + 5):
-            randomlist.append(two)
 
-        R = (int((1 - b) * height) - int(b * height)) / 2
-        x0 = int(0.5 * width)
-        y0 = int(0.5 * height)
-        x = int(x0 + R * -math.cos(math.radians(angle)))
-        y = int(y0 + R * math.sin(math.radians(angle)))
-        draw.ellipse([x - 20, y - 20, x + 20, y + 20], fill=planets[j - 1].color)
 
-        # текст
-        draw.text((x - 15, y + 20), text=planets[j - 1].name, fill=color_text, font=font)
-        b -= i
-
-    # кербол
-    draw.ellipse([0.45 * width, 0.45 * height, 0.55 * width, 0.55 * height], 'yellow')
-    draw.text((0.486 * width, 0.55 * height), 'Kerbol', fill=color_text, font=font)
-
-    data = im.tobytes("raw", "RGB")
-    qim = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_RGB888)
-    return QtGui.QPixmap.fromImage(qim)
 

@@ -1,11 +1,13 @@
 # pip install -r requirements.txt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QColorDialog, QLabel
-from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QColorDialog
+from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor, QPen
 from PyQt5.QtCore import Qt, QPoint
 import qdarktheme
 
 import sys
 import traceback
+from random import randint
+import math
 
 from interface import Ui_MainWindow
 from interface2 import Ui_MainWindow_Error
@@ -37,6 +39,8 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         self.darkTheme.clicked.connect(self.theme_change)
         self.darkTheme.setIcon(QIcon(QPixmap(IMAGES + 'icon-light.png')))
         self.map_but.clicked.connect(self.map)
+        self.first = ''
+        self.second = ''
 
     def map(self):
         dialog = DialogMapPlanets(self)
@@ -49,19 +53,26 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         self.start.addItems(planets)
         self.End.addItems(planets)
 
-    def calculate(self):
-        valid(self.start_text)
-        valid(self.end_text)
+    def calculate(self, flag=False):
+        first = self.start_text
+        second = self.end_text
+        if flag:
+            first = self.first
+            second = self.second
+        valid(first)
+        valid(second)
         color = (248, 249, 250)
         color_text = (0, 0, 0)
         if self.dark:
             color = (32, 33, 36)
             color_text = (255, 255, 255)
         self.Angel.setText(
-            str(round(float(kspPlanetsTransphere.create_angle(self.start_text, self.end_text)), 1)) + '°')
+            str(round(float(kspPlanetsTransphere.create_angle(first, second)), 1)) + '°')
         self.Image.setPixmap(
-            QPixmap(kspPlanetsTransphere.draw_angle(self.start_text, self.end_text, width=self.Image.width(),
+            QPixmap(kspPlanetsTransphere.draw_angle(first, second, width=self.Image.width(),
                                                     height=self.Image.height(), color=color, color_text=color_text)))
+        self.first = first
+        self.second = second
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Enter - 1:
@@ -100,8 +111,8 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
             self.darkTheme.setIcon(QIcon(QPixmap(IMAGES + 'icon-dark.png')))
         self.dark = not self.dark
         try:
-            self.calculate()
-        except Exception:
+            self.calculate(flag=True)
+        except ExceptionGroupKSP:
             pass
 
 
@@ -147,21 +158,73 @@ class DialogMapPlanets(QDialog):
         super().__init__(window)
         self.window_main = window
         self.setGeometry(150, 100, 1000, 1000)
-        self.x = 1000
-        self.y = 1000
-        self.label = QLabel(self)
-        self.resize(1000, 1000)
-        self.move(0, 0)
-        self.draw()
 
-    def draw(self):
+
+
+
+    def paintEvent(self, event):
+        qp = QPainter()
+        qp.begin(self)
+        self.draw(qp)
+        qp.end()
+
+    def draw(self, qp: QPainter):
+        height = 1000
+        width = 1000
         color = (248, 249, 250)
         color_text = (0, 0, 0)
+
         if self.window_main.dark:
             color = (32, 33, 36)
             color_text = (255, 255, 255)
 
-        self.label.setPixmap(kspPlanetsTransphere.draw_map(color=color, color_text=color_text))
+        planets = WriteAndReadFilesFunctions.planet_classes()[1:]
+        planets1 = []
+        for planet in planets:
+            if planet.parent == 0:
+                planets1.append(planet)
+
+        planets = planets1[:]
+        planets = sorted(planets, key=lambda x: x.alt)
+        qp.setBrush(QColor(*color))
+        pen_black = QPen()
+        pen_black.setColor(QColor(*color_text))
+        qp.setPen(pen_black)
+        pen_light = QPen()
+        pen_light.setBrush(QColor(*color))
+
+        i = 0.4 * width / len(planets)
+        b = 0.9 * width / 2
+
+        center = QPoint(500, 500)
+
+        for j in range(len(planets), 0, -1):
+            qp.setPen(pen_black)
+            qp.setBrush(QColor(*color))
+            # орбита
+            qp.drawEllipse(center, b, b)
+
+            # планета
+            angle = randint(0, 360)
+            x0 = int(0.5 * width)
+            y0 = int(0.5 * height)
+            x = int(x0 + b * -math.cos(math.radians(angle)))
+            y = int(y0 + b * math.sin(math.radians(angle)))
+
+            qp.setPen(pen_light)
+            qp.setBrush(QColor(planets[j - 1].color))
+            qp.drawEllipse(QPoint(x, y), 25, 25)
+            b -= i
+            # текст
+            qp.setPen(pen_black)
+            qp.drawText(QPoint(x - 15, y + 35), planets[j - 1].name)
+        # Kerbol
+        qp.setPen(pen_light)
+        qp.setBrush(QColor('yellow'))
+        qp.drawEllipse(center, 50, 50)
+        qp.setPen(pen_black)
+        qp.drawText(QPoint(500 - 15, 500 + 65), 'Kerbol')
+
 
 
 def except_hook(exc_type, exc_value, exc_tb):
