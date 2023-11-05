@@ -17,10 +17,6 @@ class Planet:
         return self.name
 
 
-class ObjectOfRocket:
-    pass
-
-
 # исключения
 class ExceptionGroupKSP(Exception):
     def __init__(self, message='Необработанная ошибка'):
