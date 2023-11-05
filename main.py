@@ -1,6 +1,6 @@
 # pip install -r requirements.txt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QColorDialog
-from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor, QPen
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QColorDialog, QLabel, QPushButton
+from PyQt5.QtGui import QPixmap, QIcon, QPainter, QColor, QPen, QFont
 from PyQt5.QtCore import Qt, QPoint
 import qdarktheme
 
@@ -84,13 +84,16 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
     def change_end(self, text):
         self.end_text = text
 
-    def error_message(self, text=None):
-        if text is not None:
-            dialog = MyDialog(self, text)
+    def error_message(self, text=None, flag=False):
+        if flag:
+            dialog = ErrorCriticalDialog(self)
+            dialog.show()
+            result = dialog.exec_()
         else:
-            dialog = MyDialog(self)
-        dialog.show()
-        result = dialog.exec_()
+            dialog = ErrorMessage(text, window=self)
+            dialog.show()
+            result = dialog.exec_()
+
         return result
 
     def add_planet(self):
@@ -116,16 +119,37 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
             pass
 
 
-# окно ошибки
-class MyDialog(QDialog, Ui_MainWindow_Error):
-    def __init__(self, window=None, text=None):
+# окна ошибки
+class ErrorCriticalDialog(QDialog, Ui_MainWindow_Error):
+    def __init__(self, window=None):
         super().__init__(window)
         self.setupUi(self)
-        if text is not None:
-            self.label.setText(text)
         self.Yes.clicked.connect(self.accept)
         self.No.clicked.connect(self.reject)
         self.setModal(True)
+
+
+class ErrorMessage(QDialog):
+    def __init__(self, message, window=None):
+        super().__init__(window)
+        self.message = message
+        self.set_ui()
+
+    def set_ui(self):
+        self.setModal(True)
+        self.resize(500, 200)
+        self.label = QLabel(self)
+        font = QFont()
+        font.setPointSize(12)
+        self.label.setFont(font)
+        self.label.setText(self.message)
+        self.label.setScaledContents(True)
+        self.label.move(150, 50)
+        self.but = QPushButton(self)
+        self.but.setText('ok')
+        self.but.move(250, 150)
+        self.but.setFont(font)
+        self.but.clicked.connect(self.accept)
 
 
 class DialogAddPlanet(QDialog, Ui_Form):
@@ -158,9 +182,6 @@ class DialogMapPlanets(QDialog):
         super().__init__(window)
         self.window_main = window
         self.setGeometry(150, 100, 1000, 1000)
-
-
-
 
     def paintEvent(self, event):
         qp = QPainter()
@@ -226,12 +247,11 @@ class DialogMapPlanets(QDialog):
         qp.drawText(QPoint(500 - 15, 500 + 65), 'Kerbol')
 
 
-
 def except_hook(exc_type, exc_value, exc_tb):
     if not issubclass(exc_type, ExceptionGroupKSP):
         tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
         WriteAndReadFilesFunctions.write_exception(tb)
-        res = ex.error_message()
+        res = ex.error_message(flag=True)
         if res == OK_RESULT:
             sys.exit()
 

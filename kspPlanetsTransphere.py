@@ -1,39 +1,15 @@
-import sqlite3
 import math
 from PIL import Image, ImageDraw
 from PyQt5 import QtGui
 
-from Constans import *
 from MainClasses import *
 from WriteAndReadFilesFunctions import planet_classes
 
 
-
-def get_part_info(name):
-    con = sqlite3.connect(DATABASE + 'objects.db')
-    cur = con.cursor()
-    data = cur.execute("""select * from objects where name = ?""", (name,)).fetchall()
-
-    con.close()
-    return RocketEngine(*data[0])
-
-
-def delta_v(first, second):
-    if second == first:
-        return 0
-    if second == 'Kerbin':
-        first, second = second, first
-
-    con = sqlite3.connect(DATABASE + 'MapDeltaV.db')
-    cur = con.cursor()
-    data = cur.execute("""select DeltaV from main where End = ?""", second).fetchall()
-    return data[0][0]
-
-
 def create_angle(first, second):
-    planets = planet_classes()
-    parent = 0
-    if first == second:
+    planets = planet_classes()  # список планет
+    parent = None
+    if first == second:  # заменение строчек классами
         raise SamePlanet('укажите разные планеты')
     for el in planets:
         if el.name == first:
@@ -119,8 +95,3 @@ def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255), co
     data = im.tobytes("raw", "RGB")
     qim = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_RGB888)
     return QtGui.QPixmap.fromImage(qim)
-
-
-
-
-

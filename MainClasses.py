@@ -21,20 +21,6 @@ class ObjectOfRocket:
     pass
 
 
-class RocketEngine(ObjectOfRocket):
-    def __init__(self, id, name, traction, pulse, mass):
-        self.name = name
-        self.traction = traction
-        self.pulse = pulse
-        self.mass = mass
-
-
-class Tank(ObjectOfRocket):
-    def __init__(self, id, name, mass):
-        self.name = name
-        self.mass = mass
-
-
 # исключения
 class ExceptionGroupKSP(Exception):
     def __init__(self, message='Необработанная ошибка'):
