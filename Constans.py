@@ -1,3 +1,4 @@
+# константы, которые используются по всей программе.
 DATABASE = "datebases\\"
 IMAGES = 'images\\'
 TTF = 'TTF\\'
