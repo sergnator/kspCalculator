@@ -137,5 +137,5 @@ class Ui_Form(object):
         self.label_6.setText(_translate("PlanetAdd", "Высота"))
         self.atmoph.setText(_translate("PlanetAdd", "есть"))
         self.color_button.setText(_translate("PlanetAdd", "Выбрать"))
-        self.saveBut.setText(_translate("PlanetAdd", "Потвердить"))
+        self.saveBut.setText(_translate("PlanetAdd", "Подтвердить"))
         self.cancel.setText(_translate("PlanetAdd", "Отмена"))

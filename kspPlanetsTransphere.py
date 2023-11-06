@@ -5,6 +5,7 @@ from PyQt5 import QtGui
 from MainClasses import *
 from WriteAndReadFilesFunctions import planet_classes
 
+
 # расчёт угла
 def create_angle(first, second):
     planets = planet_classes()  # список планет
@@ -24,6 +25,7 @@ def create_angle(first, second):
     angle = (180 - math.sqrt(parent.second_space_speed / second.alt) * (t_h / second.alt) * (180 / math.pi)) % 360
     return str(angle)
 
+
 # отрисовка планет
 def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255), color_text=(0, 0, 0)):
     if first == second:
@@ -40,7 +42,7 @@ def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255), co
             first = el
         elif el.name == second:
             second = el
-    flag = second.alt < first.alt 
+    flag = second.alt < first.alt
     # определение какакя планета выше, какая ниже
     if first.parent != second.parent:
         raise DifferentParent('укажите планеты с одинаковым "родителем"')

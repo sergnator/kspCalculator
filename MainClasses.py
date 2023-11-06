@@ -45,5 +45,6 @@ class NoAnyoneSelect(IncorrectInput):
 class DifferentParent(IncorrectInput):
     pass
 
+
 class SamePlanet(IncorrectInput):
     pass

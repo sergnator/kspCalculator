@@ -4,6 +4,7 @@ import sqlite3
 from MainClasses import Planet
 from Constans import DATABASE
 
+
 # запись исключений
 def write_exception(message):
     now = datetime.datetime.now()
@@ -16,6 +17,7 @@ def write_exception(message):
         os.mkdir('crusheslogs')
         with open(path, 'w', encoding='utf-8') as f:
             f.write(message)
+
 
 # функция, которая возращает список экземпляров классов
 def planet_classes():
@@ -38,6 +40,7 @@ def __convert(obj):
 
     return f"'{obj}'"
 
+
 # добавления планет в базу данных
 def add_obj_in_database(path, data, data_name):
     con = sqlite3.connect(path)
@@ -50,5 +53,3 @@ def add_obj_in_database(path, data, data_name):
     cur.execute(req)
     con.commit()
     con.close()
-
-
