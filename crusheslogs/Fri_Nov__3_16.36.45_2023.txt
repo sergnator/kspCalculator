@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "C:\Users\Александр\OneDrive\Рабочий стол\kspCalculator-main\main.py", line 264, in <module>
-    sys.exit(app.exec_())
-             ^^^^^^^^^^^
-KeyboardInterrupt

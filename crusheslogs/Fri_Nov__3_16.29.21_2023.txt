@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "C:\Users\Александр\OneDrive\Рабочий стол\kspCalculator-main\main.py", line 247, in <module>
-    ex.show()
-             ^
-KeyboardInterrupt
