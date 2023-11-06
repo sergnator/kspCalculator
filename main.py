@@ -25,7 +25,7 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         self.root()
         qdarktheme.setup_theme('light')
 
-    def root(self):
+    def root(self): 
         self.pixmap_icon = QPixmap(IMAGES + 'KspIcon.png')
         self.Icon.setPixmap(self.pixmap_icon)
         self.fill_combobox()
@@ -42,18 +42,18 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         self.first = ''
         self.second = ''
 
-    def map(self):
+    def map(self):  # вызов окна карты планет
         dialog = DialogMapPlanets(self)
         dialog.setModal(True)
         dialog.show()
 
-    def fill_combobox(self):
+    def fill_combobox(self):  # заполнение QComboBox элементами
         planets = kspPlanetsTransphere.planet_classes()
         planets = list(map(str, planets))[1:]
         self.start.addItems(planets)
         self.End.addItems(planets)
 
-    def calculate(self, flag=False):
+    def calculate(self, flag=False):  # отрисовка планет
         first = self.start_text
         second = self.end_text
         if flag:
@@ -74,16 +74,16 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
         self.first = first
         self.second = second
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event):  # быстрая клавиша подсчёта
         if event.key() == Qt.Key_Enter - 1:
             self.calculate()
-
-    def change_start(self, text):
+    # сохранения текущего значения ComboBox
+    def change_start(self, text): 
         self.start_text = text
 
     def change_end(self, text):
         self.end_text = text
-
+    # вызов окна ошибки
     def error_message(self, text=None, flag=False):
         if flag:
             dialog = ErrorCriticalDialog(self)
@@ -95,7 +95,7 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
             result = dialog.exec_()
 
         return result
-
+    # вызов окна добавления планет
     def add_planet(self):
         dialog = DialogAddPlanet(self)
         dialog.show()
@@ -104,7 +104,7 @@ class CalculatorKsp(QMainWindow, Ui_MainWindow):
             res = dialog.param
             WriteAndReadFilesFunctions.add_obj_in_database(DATABASE + 'planets.db', res, (
                 'name', 'g', 'atmosphere', 'secondSpaceSpeed', 'color', 'alt'))
-
+    # изменение темы
     def theme_change(self):
         if self.dark:
             qdarktheme.setup_theme('light')
@@ -151,7 +151,7 @@ class ErrorMessage(QDialog):
         self.but.setFont(font)
         self.but.clicked.connect(self.accept)
 
-
+# класс окна добавления планет
 class DialogAddPlanet(QDialog, Ui_Form):
     def __init__(self, window=None):
         super().__init__(window)
@@ -176,7 +176,7 @@ class DialogAddPlanet(QDialog, Ui_Form):
             self.color_button.setStyleSheet(f'background-color: {color.value()}')
             self.color = color.rgb()
 
-
+# окно карты планет
 class DialogMapPlanets(QDialog):
     def __init__(self, window=None):
         super().__init__(window)
@@ -188,25 +188,25 @@ class DialogMapPlanets(QDialog):
         qp.begin(self)
         self.draw(qp)
         qp.end()
-
+    # рисование карты
     def draw(self, qp: QPainter):
         height = 1000
         width = 1000
         color = (248, 249, 250)
         color_text = (0, 0, 0)
-
+        # определение цвета
         if self.window_main.dark:
             color = (32, 33, 36)
             color_text = (255, 255, 255)
-
+        # получение планет (не спутников)
         planets = WriteAndReadFilesFunctions.planet_classes()[1:]
         planets1 = []
         for planet in planets:
             if planet.parent == 0:
                 planets1.append(planet)
-
-        planets = planets1[:]
-        planets = sorted(planets, key=lambda x: x.alt)
+        
+        planets = planets1[:] 
+        planets = sorted(planets, key=lambda x: x.alt) # сортировка по высоте
         qp.setBrush(QColor(*color))
         pen_black = QPen()
         pen_black.setColor(QColor(*color_text))
@@ -214,7 +214,7 @@ class DialogMapPlanets(QDialog):
         pen_light = QPen()
         pen_light.setBrush(QColor(*color))
 
-        i = 0.4 * width / len(planets)
+        i = 0.4 * width / len(planets) # вычисления см. пояснителную записку
         b = 0.9 * width / 2
 
         center = QPoint(500, 500)
@@ -246,7 +246,7 @@ class DialogMapPlanets(QDialog):
         qp.setPen(pen_black)
         qp.drawText(QPoint(500 - 15, 500 + 65), 'Kerbol')
 
-
+# обработчик исключений
 def except_hook(exc_type, exc_value, exc_tb):
     if not issubclass(exc_type, ExceptionGroupKSP):
         tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
