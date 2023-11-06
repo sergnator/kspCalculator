@@ -5,7 +5,7 @@ from PyQt5 import QtGui
 from MainClasses import *
 from WriteAndReadFilesFunctions import planet_classes
 
-
+# расчёт угла
 def create_angle(first, second):
     planets = planet_classes()  # список планет
     parent = None
@@ -24,7 +24,7 @@ def create_angle(first, second):
     angle = (180 - math.sqrt(parent.second_space_speed / second.alt) * (t_h / second.alt) * (180 / math.pi)) % 360
     return str(angle)
 
-
+# отрисовка планет
 def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255), color_text=(0, 0, 0)):
     if first == second:
         raise SamePlanet('Укажите разные планеты')
@@ -34,21 +34,22 @@ def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255), co
     x = 0
     y = 0
 
-    # определение какакя планета выше, какая ниже
     planets = planet_classes()
     for el in planets:
         if el.name == first:
             first = el
         elif el.name == second:
             second = el
-    flag = second.alt < first.alt
+    flag = second.alt < first.alt 
+    # определение какакя планета выше, какая ниже
     if first.parent != second.parent:
         raise DifferentParent('укажите планеты с одинаковым "родителем"')
 
     # рисует second
-
+    # орбита
     draw.ellipse(((int(0.2 * width), int(0.2 * height)), (int(0.8 * width), int(0.8 * height))),
                  fill=color, outline=color_text)
+    # планета и текст
     if flag:
         draw.ellipse(((int(0.77 * width), int(0.47 * height)), (int(0.83 * width), int(0.53 * height))),
                      fill=first.color)
@@ -64,9 +65,10 @@ def draw_angle(first, second, width=1000, height=1000, color=(255, 255, 255), co
         draw.text((x - 30, y + 30), second.name, fill=color_text, font_size=20)
 
     # рисует first
-
+    # орбита 
     draw.ellipse(((int(0.3 * width), int(0.3 * height)), (int(0.7 * width), int(0.7 * height))),
                  fill=color, outline=color_text)
+    # планета и текст
     if flag:
         R = (int(0.3 * height) - int(0.7 * height)) / 2
         x0 = int(0.5 * width)
